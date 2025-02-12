@@ -1,0 +1,1 @@
+Dette repositoriet skal som formål gjøre det mulig å kontrollere labutstyr som strømforsyninger og elektronisk last via kode.
