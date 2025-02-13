@@ -121,12 +121,18 @@ if __name__ == "__main__":
         # Read measured values
         voltage = sdl.get_voltage()
         current = sdl.get_current()
-        print(f"Measured Voltage: {voltage} V")
-        print(f"Measured Current: {current} A")
+        print(f"Measured Voltage, Current: {voltage} V, {current} A")
+        
         time.sleep(1)
 
     # Turn off load
     sdl.turn_off()
+    time.sleep(10)
+
+    # Measure after load test
+    voltage = sdl.get_voltage()
+    current = sdl.get_current()
+    print(f"Measured Voltage, Current: {voltage} V, {current} A")
 
     # Close connection
     sdl.close()
