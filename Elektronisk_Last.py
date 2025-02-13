@@ -1,10 +1,10 @@
 import pyvisa
 import time
 
-class Elektronisk_Last:
-    """Class to control the Siglent SDL1030X-E DC Electronic Load via SCPI commands."""
+class BatteryTester:
+    """Class to control the Siglent SDL1030X-E DC Electronic Load in Battery Testing Mode."""
 
-    def __init__(self, address='USB0::0xF4EC::0x1630::SDL13GCQ7R0669::INSTR',timeout=10000):
+    def __init__(self, address='USB0::0xF4EC::0x1630::SDL13GCQ7R0669::INSTR', timeout=10000):
         """Initialize connection to the instrument."""
         try:
             self.rm = pyvisa.ResourceManager()
@@ -44,53 +44,68 @@ class Elektronisk_Last:
         """Reset the instrument to default settings."""
         self.write("*RST")
 
-    def set_mode(self, mode):
-        """Set the operating mode: CC (Constant Current), CV (Constant Voltage), CR (Constant Resistance), CP (Constant Power)."""
-        valid_modes = ["CC", "CV", "CR", "CP"]
+    def enable_battery_mode(self):
+        """Enable Battery Mode."""
+        self.write(":SOUR:BATT:FUNC")
+        print("Battery testing mode enabled.")
+
+    def set_discharge_mode(self, mode):
+        """Set battery discharge mode: 'CC' (Constant Current), 'CP' (Constant Power), 'CR' (Constant Resistance)."""
+        valid_modes = ["CURRent", "POWer", "RESistance"]
         if mode in valid_modes:
-            self.write(f"FUNC {mode}")
+            self.write(f":SOUR:BATT:MODE {mode}")
+            print(f"Battery discharge mode set to {mode}.")
         else:
             print(f"Invalid mode: {mode}. Choose from {valid_modes}.")
 
-    def set_current(self, current):
-        """Set current (only in Constant Current mode)."""
-        self.write(f"CURR {current}")
+    def set_discharge_current(self, current):
+        """Set discharge current (only in Constant Current mode)."""
+        self.write(f":SOUR:BATT:LEVel {current}")
+        print(f"Discharge current set to {current} A.")
 
-    def set_voltage(self, voltage):
-        """Set voltage (only in Constant Voltage mode)."""
-        self.write(f"VOLT {voltage}")
+    def set_cutoff_voltage(self, voltage):
+        """Set battery cutoff voltage (stops discharge when reached)."""
+        self.write(f":SOUR:BATT:VOLT {voltage}")
+        self.write(":SOUR:BATT:VOLT:STAT ON")  # Enable cutoff voltage
+        print(f"Cutoff voltage set to {voltage} V.")
 
-    def set_resistance(self, resistance):
-        """Set resistance (only in Constant Resistance mode)."""
-        self.write(f"RES {resistance}")
+    def set_cutoff_capacity(self, capacity):
+        """Set battery cutoff capacity (Ah)."""
+        self.write(f":SOUR:BATT:CAP {capacity}")
+        self.write(":SOUR:BATT:CAP:STAT ON")  # Enable cutoff capacity
+        print(f"Cutoff capacity set to {capacity} Ah.")
 
-    def set_power(self, power):
-        """Set power (only in Constant Power mode)."""
-        self.write(f"POW {power}")
+    def set_cutoff_time(self, time_limit):
+        """Set battery cutoff time (in seconds)."""
+        self.write(f":SOUR:BATT:TIM {time_limit}")
+        self.write(":SOUR:BATT:TIM:STAT ON")  # Enable cutoff time
+        print(f"Cutoff time set to {time_limit} seconds.")
 
-    def turn_on(self):
-        """Turn on the electronic load."""
+    def start_discharge(self):
+        """Start battery discharge."""
         self.write("INP ON")
+        print("Battery discharge started.")
 
-    def turn_off(self):
-        """Turn off the electronic load."""
+    def stop_discharge(self):
+        """Stop battery discharge."""
         self.write("INP OFF")
+        print("Battery discharge stopped.")
 
     def get_voltage(self):
-        """Get the measured voltage."""
+        """Get measured battery voltage."""
         return self.query("MEAS:VOLT?")
 
     def get_current(self):
-        """Get the measured current."""
+        """Get measured discharge current."""
         return self.query("MEAS:CURR?")
 
-    def get_resistance(self):
-        """Get the measured resistance."""
-        return self.query("MEAS:RES?")
+    def get_capacity(self):
+        """Get total discharged capacity (Ah)."""
+        return self.query(":SOUR:BATT:DISCHA:CAP?")
 
-    def get_power(self):
-        """Get the measured power."""
-        return self.query("MEAS:POW?")
+    def get_discharge_time(self):
+        """Get total discharge time (seconds)."""
+        return self.query(":SOUR:BATT:DISCHA:TIM?")
 
     def close(self):
         """Close the instrument connection."""
@@ -105,34 +120,46 @@ class Elektronisk_Last:
 # Example Usage
 if __name__ == "__main__":
     # Initialize the instrument
-    sdl = Elektronisk_Last()
+    battery_test = BatteryTester()
 
-    # Reset the device
-    sdl.reset()
+    # Reset device
+    battery_test.reset()
+    
+    # Enable battery testing mode
+    battery_test.enable_battery_mode()
 
-    # Set mode to Constant Current and configure current
-    sdl.set_mode("CC")
-    sdl.set_current(2.0)
+    # Set discharge mode (Constant Current)
+    battery_test.set_discharge_mode("CURRent")
 
-    # Turn on load
-    sdl.turn_on()
+    # Set test parameters
+    discharge_current = 5.0  # Amps
+    cutoff_voltage = 3.4  # Volts
+    cutoff_capacity = 1000.0  # mAh
+    cutoff_time = 300  # 1 Seconds
 
-    for i in range(60):
-        # Read measured values
-        voltage = sdl.get_voltage()
-        current = sdl.get_current()
-        print(f"Measured Voltage, Current: {voltage} V, {current} A")
-        
-        time.sleep(1)
+    battery_test.set_discharge_current(discharge_current)
+    battery_test.set_cutoff_voltage(cutoff_voltage)
+    #battery_test.set_cutoff_capacity(cutoff_capacity)
+    battery_test.set_cutoff_time(cutoff_time)
 
-    # Turn off load
-    sdl.turn_off()
-    time.sleep(10)
+    # Start discharge
+    battery_test.start_discharge()
 
-    # Measure after load test
-    voltage = sdl.get_voltage()
-    current = sdl.get_current()
-    print(f"Measured Voltage, Current: {voltage} V, {current} A")
+    # Monitor battery parameters
+    while True:
+        voltage = battery_test.get_voltage()
+        current = battery_test.get_current()
+        capacity = battery_test.get_capacity()
+        discharge_time = battery_test.get_discharge_time()
+
+        print(f"Voltage: {voltage} V, Current: {current} A, Capacity: {capacity} Ah, Time: {discharge_time} s")
+
+        if float(voltage) <= cutoff_voltage or float(capacity) >= cutoff_capacity or float(discharge_time) >= cutoff_time:
+            print("Cutoff condition reached! Stopping discharge.")
+            battery_test.stop_discharge()
+            break
+
+        time.sleep(10)  # Check every 10 seconds
 
     # Close connection
-    sdl.close()
+    battery_test.close()
