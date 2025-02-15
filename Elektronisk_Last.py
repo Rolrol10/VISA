@@ -132,10 +132,10 @@ if __name__ == "__main__":
     battery_test.set_discharge_mode("CURRent")
 
     # Set test parameters
-    discharge_current = 5.0  # Amps
+    discharge_current = 17.0  # Amps
     cutoff_voltage = 3.4  # Volts
     cutoff_capacity = 1000.0  # mAh
-    cutoff_time = 300  # 1 Seconds
+    cutoff_time = 5  # 1 Seconds
 
     battery_test.set_discharge_current(discharge_current)
     battery_test.set_cutoff_voltage(cutoff_voltage)
