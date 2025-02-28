@@ -1,5 +1,7 @@
 import pyvisa
 import time
+import os
+import csv
 
 class BatteryTester:
     """Class to control the Siglent SDL1030X-E DC Electronic Load in Battery Testing Mode."""
@@ -99,6 +101,14 @@ class BatteryTester:
         """Get measured discharge current."""
         return self.query("MEAS:CURR?")
 
+    def get_power(self):
+        """Get measured power in watts."""
+        return self.query("MEAS:POW?")
+    
+    def get_resist(self):
+        """Get measured resistor."""
+        return self.query("MEAS:RES?")
+
     def get_capacity(self):
         """Get total discharged capacity (Ah)."""
         return self.query(":SOUR:BATT:DISCHA:CAP?")
@@ -117,6 +127,46 @@ class BatteryTester:
         """Ensure connection is closed when the object is deleted."""
         self.close()
 
+    def log_data_to_csv(self, filename="battery_test_data.csv"):
+        """Log battery test parameters to a CSV file every 5 seconds for MATLAB analysis."""
+        # Check if file exists to determine whether to write headers
+        file_exists = os.path.isfile(filename)
+        try:
+            with open(filename, mode="a", newline="") as file:
+                writer = csv.writer(file)
+
+                # Write headers only if the file is new
+                if not file_exists:
+                    writer.writerow(["Timestamp", "Voltage (V)", "Current (A)", "Capacity (Ah)", 
+                                     "Discharge Time (s)", "Power (W)", "Resistance (Ω)", "Temperature (°C)"])
+
+                while True:
+                    # Fetch all parameters
+                    data = battery_test.get_all()
+                    timestamp = time.strftime("%Y-%m-%d %H:%M:%S")
+
+                    row = [timestamp, 
+                           data.get("Voltage (V)", "N/A"),
+                           data.get("Current (A)", "N/A"),
+                           data.get("Capacity (Ah)", "N/A"),
+                           data.get("Discharge Time (s)", "N/A"),
+                           data.get("Power (W)", "N/A"),
+                           data.get("Resistance (Ω)", "N/A"),
+                           data.get("Temperature (°C)", "N/A")]
+
+                    writer.writerow(row)
+                    file.flush()  # Ensure data is written immediately
+                    print(f"Data logged at {timestamp}")
+
+                    time.sleep(5)  # Log every 5 seconds
+
+        except KeyboardInterrupt:
+            print("\nLogging stopped by user.")
+        except Exception as e:
+            print(f"Error logging data: {e}")
+
+
+
 # Example Usage
 if __name__ == "__main__":
     # Initialize the instrument
@@ -132,10 +182,10 @@ if __name__ == "__main__":
     battery_test.set_discharge_mode("CURRent")
 
     # Set test parameters
-    discharge_current = 17.0  # Amps
+    discharge_current = 1.0  # Amps
     cutoff_voltage = 3.4  # Volts
-    cutoff_capacity = 1000.0  # mAh
-    cutoff_time = 5  # 1 Seconds
+    cutoff_capacity = 4800.0  # mAh
+    cutoff_time = 120  # 1 Seconds
 
     battery_test.set_discharge_current(discharge_current)
     battery_test.set_cutoff_voltage(cutoff_voltage)
@@ -149,17 +199,19 @@ if __name__ == "__main__":
     while True:
         voltage = battery_test.get_voltage()
         current = battery_test.get_current()
+        power = battery_test.get_power()
+        reistance = battery_test.get_resist()
         capacity = battery_test.get_capacity()
         discharge_time = battery_test.get_discharge_time()
 
-        print(f"Voltage: {voltage} V, Current: {current} A, Capacity: {capacity} Ah, Time: {discharge_time} s")
+        print(f"Voltage: {voltage} V, Current: {current} A, Power: {power} W, Resistance: {reistance}, Capacity: {capacity} mAh, Time: {discharge_time} s")
 
         if float(voltage) <= cutoff_voltage or float(capacity) >= cutoff_capacity or float(discharge_time) >= cutoff_time:
             print("Cutoff condition reached! Stopping discharge.")
             battery_test.stop_discharge()
             break
 
-        time.sleep(10)  # Check every 10 seconds
+        time.sleep(1)  # Check every 10 seconds
 
     # Close connection
     battery_test.close()
