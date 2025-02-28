@@ -127,38 +127,36 @@ class BatteryTester:
         """Ensure connection is closed when the object is deleted."""
         self.close()
 
-    def log_data_to_csv(self, filename="battery_test_data.csv"):
+    def log_data_to_csv(self, voltage, current, power, resistance, capacity, discharge_time, filename="battery_test_data.csv"):
         """Log battery test parameters to a CSV file every 5 seconds for MATLAB analysis."""
         # Check if file exists to determine whether to write headers
         file_exists = os.path.isfile(filename)
         try:
-            with open(filename, mode="a", newline="") as file:
+            with open(filename, mode="a", newline="", encoding="utf-8") as file:
                 writer = csv.writer(file)
 
                 # Write headers only if the file is new
                 if not file_exists:
-                    writer.writerow(["Timestamp", "Voltage (V)", "Current (A)", "Capacity (Ah)", 
-                                     "Discharge Time (s)", "Power (W)", "Resistance (Ω)", "Temperature (°C)"])
+                    writer.writerow(["Timestamp", "Voltage (V)", "Current (A)", "Power (W)", 
+                                       "Resistance (Ω)", "Capacity used (mAh)", "Discharge Time (s)"])
 
-                while True:
-                    # Fetch all parameters
-                    data = battery_test.get_all()
-                    timestamp = time.strftime("%Y-%m-%d %H:%M:%S")
+                # Fetch all parameters
+                #data = battery_test.get_all()
+                timestamp = time.strftime("%Y-%m-%d %H:%M:%S")
 
-                    row = [timestamp, 
-                           data.get("Voltage (V)", "N/A"),
-                           data.get("Current (A)", "N/A"),
-                           data.get("Capacity (Ah)", "N/A"),
-                           data.get("Discharge Time (s)", "N/A"),
-                           data.get("Power (W)", "N/A"),
-                           data.get("Resistance (Ω)", "N/A"),
-                           data.get("Temperature (°C)", "N/A")]
+                row = [timestamp, 
+                       voltage,
+                       current,
+                       power,
+                       resistance,
+                       capacity,
+                       discharge_time]
 
-                    writer.writerow(row)
-                    file.flush()  # Ensure data is written immediately
-                    print(f"Data logged at {timestamp}")
+                writer.writerow(row)
+                file.flush()  # Ensure data is written immediately
+                print(f"Data logged at {timestamp}")
 
-                    time.sleep(5)  # Log every 5 seconds
+                # time.sleep(5)  # Log every 5 seconds
 
         except KeyboardInterrupt:
             print("\nLogging stopped by user.")
@@ -183,9 +181,14 @@ if __name__ == "__main__":
 
     # Set test parameters
     discharge_current = 1.0  # Amps
-    cutoff_voltage = 3.4  # Volts
+    cutoff_time = 60*60*5  # 1 Seconds
+
+    # Log filename
+    filename = f"Last_med_{discharge_current}A_{time.strftime('%Y-%m-%d_%H-%M-%S')}.csv" 
+
+    # Safety parameters
+    cutoff_voltage = 3.0  # Volts
     cutoff_capacity = 4800.0  # mAh
-    cutoff_time = 120  # 1 Seconds
 
     battery_test.set_discharge_current(discharge_current)
     battery_test.set_cutoff_voltage(cutoff_voltage)
@@ -200,16 +203,18 @@ if __name__ == "__main__":
         voltage = battery_test.get_voltage()
         current = battery_test.get_current()
         power = battery_test.get_power()
-        reistance = battery_test.get_resist()
+        resistance = battery_test.get_resist()
         capacity = battery_test.get_capacity()
         discharge_time = battery_test.get_discharge_time()
 
-        print(f"Voltage: {voltage} V, Current: {current} A, Power: {power} W, Resistance: {reistance}, Capacity: {capacity} mAh, Time: {discharge_time} s")
+        print(f"Voltage: {voltage} V, Current: {current} A, Power: {power} W, Resistance: {resistance}, Capacity: {capacity} mAh, Time: {discharge_time} s")
 
         if float(voltage) <= cutoff_voltage or float(capacity) >= cutoff_capacity or float(discharge_time) >= cutoff_time:
             print("Cutoff condition reached! Stopping discharge.")
             battery_test.stop_discharge()
             break
+        
+        battery_test.log_data_to_csv(voltage, current, power, resistance, capacity, discharge_time, filename)
 
         time.sleep(1)  # Check every 10 seconds
 
