@@ -214,7 +214,7 @@ if __name__ == "__main__":
             psu.output_off(Høyre_kanal)
             break
 
-        # time.sleep(1)  # Update every 1 seconds
+        time.sleep(1)  # Update every 1 seconds
 
         #                                                                               Skille mellom kanaler
 

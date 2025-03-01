@@ -142,7 +142,9 @@ if __name__ == "__main__":
 
     # Set voltage and current
     psu.set_voltage(Høyre_kanal, voltage+0.1)
+    time.sleep(1)
     psu.set_current(Høyre_kanal, max_c)
+    time.sleep(1)
 
     try:
         input("Check that the voltage is correct on the PSU display and then hit enter: ")
@@ -160,8 +162,8 @@ if __name__ == "__main__":
         time.sleep(1)
         current_raw = psu.measure_current(Høyre_kanal)
         time.sleep(1)
-        print(voltage_raw)
-        print(current_raw)
+        # print(voltage_raw)
+        # print(current_raw)
         # Extracting just the numeric value
         voltage = float(voltage_raw[:-1])
         current = float(current_raw[:-1])
