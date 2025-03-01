@@ -122,31 +122,44 @@ if __name__ == "__main__":
     # Reset the device
     psu.reset()
 
+    # Venstre og Høyre Kanal på strømforsyning
+    Venstre_kanal = 2
+    Høyre_kanal = 1
+
     # Sets parameters
     max_v = 4.2
     max_c = 3.0
     min_v = 3.0
     cutoff_c = 0.1
-    voltage = True
+    
+    voltage_right = True
+    voltage_left = True
 
     # Set initial voltage & current
-    while voltage == True:
+    while voltage_right == True:
         try:
-            voltage = float(input("Measure the battery and type in the voltage: "))
+            voltage_right = float(input("Measure the battery on the Right channel and type in the voltage: "))
         except Exception:
             print("Error")
 
-    # Venstre og Høyre Kanal på strømforsyning
-    Venstre_kanal = 2
-    Høyre_kanal = 1
+    while voltage_left == True:
+        try:
+            voltage_left = float(input("Measure the battery on the Left channel and type in the voltage: "))
+        except Exception:
+            print("Error")
+
 
     # Set voltage and current
-    psu.set_voltage(Høyre_kanal, voltage+0.1)
+    psu.set_voltage(Høyre_kanal, voltage_right+0.1)
+    time.sleep(1)
     psu.set_current(Høyre_kanal, max_c)
-
-    psu.set_voltage(Venstre_kanal, voltage+0.1)
+    time.sleep(1)
+    psu.set_voltage(Venstre_kanal, voltage_left+0.1)
+    time.sleep(1)
     psu.set_current(Venstre_kanal, max_c)
+    time.sleep(1)
 
+    # Check if all ok before starting charging
     try:
         input("Check that the voltage is correct on the PSU display and then hit enter: ")
     except Exception:
@@ -154,98 +167,93 @@ if __name__ == "__main__":
 
     print("\n Charging Started...\n")
 
+    # Turns on outputs
     psu.output_on(Høyre_kanal)
     time.sleep(3)
+    psu.output_on(Venstre_kanal)
+    time.sleep(3)
 
-
+    # Starts charging loop
     looptiloop = True
     while looptiloop:
         # Measure voltage & current
-        voltage_raw = psu.measure_voltage(Høyre_kanal)
+        voltage_raw_right = psu.measure_voltage(Høyre_kanal)
         time.sleep(1)
-        current_raw = psu.measure_current(Høyre_kanal)
+        current_raw_right = psu.measure_current(Høyre_kanal)
         time.sleep(1)
-        print(voltage_raw)
-        print(current_raw)
+        # print(voltage_raw_right)
+        # print(current_raw_right)
         # Extracting just the numeric value
-        voltage = float(voltage_raw[:-1])
-        current = float(current_raw[:-1])
+        voltage_right = float(voltage_raw_right[:-1])
+        current_right = float(current_raw_right[:-1])
     
         # print(f"Voltage: {voltage_value} V")
         # print(f"Current: {current_value} A")
 
         # Display status in a single line
-        print(f"\r Voltage: {voltage}V | Current: {current}A")
+        print(f"\r Right Voltage: {voltage_right}V | Current: {current_right}A")
     
         # Checks if current is too high and lowers voltage if it is
-        if current > max_c and not voltage == max_v:
-            new_volt = round((voltage - 0.02), 2)
+        if current_right > max_c and not voltage_right == max_v:
+            new_volt = round((voltage_right - 0.02), 2)
             psu.set_voltage(Høyre_kanal, new_volt)
 
         # Checks if voltage can be increased
-        if (current < (max_c-0.5)) and (voltage < max_v) and not (voltage == max_v):
-            new_volt = round((voltage + 0.01), 2)
+        if (current_right < (max_c-0.5)) and (voltage_right < max_v) and not (voltage_right == max_v):
+            new_volt = round((voltage_right + 0.01), 2)
             psu.set_voltage(Høyre_kanal, new_volt)
 
         # If battery reaches max voltage, switch to constant voltage mode
-        if voltage > max_v:
+        if voltage_right > max_v:
             psu.set_voltage(Høyre_kanal, max_v)
             # psu.set_current(Høyre_kanal, 3.0)  # Reduce current to prevent overcharging         Bør sees på
 
         # Stop charging if current falls below cutoff threshold (C/10 rule)
-        if current < cutoff_c:
-            print("\n Charging Complete! Battery is full.")
+        if current_right < cutoff_c:
+            print("\n Charging Complete! Right Battery is full.")
             psu.output_off(Høyre_kanal)
             break
 
-        time.sleep(1)  # Update every 1 seconds
+        # time.sleep(1)  # Update every 1 seconds
 
-
-
-
-
-
-
-
-
-
+        #                                                                               Skille mellom kanaler
 
         # Measure voltage & current
-        voltage_raw = psu.measure_voltage(Venstre_kanal)
+        voltage_raw_left = psu.measure_voltage(Venstre_kanal)
         time.sleep(1)
-        current_raw = psu.measure_current(Høyre_kanal)
+        current_raw_left = psu.measure_current(Venstre_kanal)
         time.sleep(1)
-        print(voltage_raw)
-        print(current_raw)
+        # print(voltage_raw_left)
+        # print(current_raw_left)
         # Extracting just the numeric value
-        voltage = float(voltage_raw[:-1])
-        current = float(current_raw[:-1])
+        voltage_left = float(voltage_raw_left[:-1])
+        current_left = float(current_raw_left[:-1])
     
         # print(f"Voltage: {voltage_value} V")
         # print(f"Current: {current_value} A")
 
         # Display status in a single line
-        print(f"\r Voltage: {voltage}V | Current: {current}A")
+        print(f"\r Left Voltage: {voltage_left}V | Current: {current_left}A")
     
         # Checks if current is too high and lowers voltage if it is
-        if current > max_c and not voltage == max_v:
-            new_volt = round((voltage - 0.02), 2)
-            psu.set_voltage(Høyre_kanal, new_volt)
+        if current_left > max_c and not voltage_left == max_v:
+            new_volt = round((voltage_left - 0.02), 2)
+            psu.set_voltage(Venstre_kanal, new_volt)
 
         # Checks if voltage can be increased
-        if (current < (max_c-0.5)) and (voltage < max_v) and not (voltage == max_v):
-            new_volt = round((voltage + 0.01), 2)
-            psu.set_voltage(Høyre_kanal, new_volt)
+        if (current_left < (max_c-0.5)) and (voltage_left < max_v) and not (voltage_left == max_v):
+            new_volt = round((voltage_left + 0.01), 2)
+            psu.set_voltage(Venstre_kanal, new_volt)
 
         # If battery reaches max voltage, switch to constant voltage mode
-        if voltage > max_v:
-            psu.set_voltage(Høyre_kanal, max_v)
+        if voltage_left > max_v:
+            psu.set_voltage(Venstre_kanal, max_v)
             # psu.set_current(Høyre_kanal, 3.0)  # Reduce current to prevent overcharging         Bør sees på
 
         # Stop charging if current falls below cutoff threshold (C/10 rule)
-        if current < cutoff_c:
-            print("\n Charging Complete! Battery is full.")
-            psu.output_off(Høyre_kanal)
+        if current_left < cutoff_c:
+            print("\n Charging Complete! Left Battery is full.")
+            psu.output_off(Venstre_kanal)
             break
 
         time.sleep(1)  # Update every 1 seconds

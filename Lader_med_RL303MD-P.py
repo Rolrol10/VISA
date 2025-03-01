@@ -195,4 +195,4 @@ if __name__ == "__main__":
 
         time.sleep(1)  # Update every 1 seconds
 
-    psu.close()
+    # psu.close()

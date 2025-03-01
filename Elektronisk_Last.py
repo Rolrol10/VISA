@@ -127,7 +127,7 @@ class BatteryTester:
         """Ensure connection is closed when the object is deleted."""
         self.close()
 
-    def log_data_to_csv(self, voltage, current, power, resistance, capacity, discharge_time, filename="battery_test_data.csv"):
+    def log_data_to_csv(self, filename="battery_test_data.csv", voltage=0, current=0, power=0, resistance=0, capacity=0, discharge_time=0):
         """Log battery test parameters to a CSV file every 5 seconds for MATLAB analysis."""
         # Check if file exists to determine whether to write headers
         file_exists = os.path.isfile(filename)
@@ -181,19 +181,26 @@ if __name__ == "__main__":
 
     # Set test parameters
     discharge_current = 1.0  # Amps                                 Skriv her
-    cutoff_time = 60*60*5  # Seconds                              Og her
+    cutoff_time = 60*60*6  # Seconds                              Og her
 
     # Log filename
     filename = f"Last_med_{discharge_current}A_{time.strftime('%Y-%m-%d_%H-%M-%S')}.csv" 
 
     # Safety parameters
-    cutoff_voltage = 3.0  # Volts
+    cutoff_voltage = 2.8  # Volts
     cutoff_capacity = 4800.0  # mAh
 
     battery_test.set_discharge_current(discharge_current)
     battery_test.set_cutoff_voltage(cutoff_voltage)
     #battery_test.set_cutoff_capacity(cutoff_capacity)
     battery_test.set_cutoff_time(cutoff_time)
+
+    # Monitor before discharge
+    for i in range(5):
+        voltage = battery_test.get_voltage()
+        print(voltage)
+        battery_test.log_data_to_csv(filename, voltage)
+        time.sleep(1)
 
     # Start discharge
     battery_test.start_discharge()
@@ -214,7 +221,7 @@ if __name__ == "__main__":
             battery_test.stop_discharge()
             break
         
-        battery_test.log_data_to_csv(voltage, current, power, resistance, capacity, discharge_time, filename)
+        battery_test.log_data_to_csv(filename, voltage, current, power, resistance, capacity, discharge_time)
 
         time.sleep(1)  # Check every 10 seconds
 
