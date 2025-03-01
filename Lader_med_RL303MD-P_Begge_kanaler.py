@@ -126,7 +126,7 @@ if __name__ == "__main__":
     max_v = 4.2
     max_c = 3.0
     min_v = 3.0
-    cutoff_c = 0.2
+    cutoff_c = 0.1
     voltage = True
 
     # Set initial voltage & current
@@ -211,7 +211,7 @@ if __name__ == "__main__":
 
 
         # Measure voltage & current
-        voltage_raw = psu.measure_voltage(Høyre_kanal)
+        voltage_raw = psu.measure_voltage(Venstre_kanal)
         time.sleep(1)
         current_raw = psu.measure_current(Høyre_kanal)
         time.sleep(1)

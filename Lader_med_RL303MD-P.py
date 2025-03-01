@@ -126,7 +126,7 @@ if __name__ == "__main__":
     max_v = 4.2
     max_c = 3.0
     min_v = 3.0
-    cutoff_c = 0.2
+    cutoff_c = 0.1
     voltage = True
 
     # Set initial voltage & current
