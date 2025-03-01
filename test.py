@@ -4,7 +4,7 @@ import time
 class PL303QMDP:
     """Class to control the Aim-TTi PL303QMD-P power supply via SCPI commands."""
 
-    def __init__(self, address='USB0::0x0AAD::0x00E3::12345678::INSTR', timeout=10000):
+    def __init__(self, address=None, timeout=10000):
         """Initialize connection to the power supply."""
         try:
             self.rm = pyvisa.ResourceManager()
@@ -63,7 +63,7 @@ class PL303QMDP:
 
     def measure_voltage(self):
         """Measure the actual output voltage."""
-        return float(self.query("V1O?"))
+        return float(self.query("V1?"))
 
     def measure_current(self):
         """Measure the actual output current."""
@@ -95,8 +95,8 @@ if __name__ == "__main__":
     psu = PL303QMDP()
     
     # Ladestrategi
-    TARGET_CURRENT = float(input("Sett ønsket ladestrøm (A): "))  # Ønsket ladestrøm
-    MAX_VOLTAGE = float(input("Sett maks ladespenning (V): "))  # Sikkerhetsgrense for batterispenning
+    TARGET_CURRENT = 2  # Ønsket ladestrøm
+    MAX_VOLTAGE = 4.2  # Sikkerhetsgrense for batterispenning
     ADJUST_STEP = 0.05  # Spenningsjustering pr. iterasjon
     SLEEP_TIME = 1  # Tid mellom målinger (sekunder)
 
