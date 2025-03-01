@@ -180,8 +180,8 @@ if __name__ == "__main__":
     battery_test.set_discharge_mode("CURRent")
 
     # Set test parameters
-    discharge_current = 1.0  # Amps
-    cutoff_time = 60*60*5  # 1 Seconds
+    discharge_current = 1.0  # Amps                                 Skriv her
+    cutoff_time = 60*60*5  # Seconds                              Og her
 
     # Log filename
     filename = f"Last_med_{discharge_current}A_{time.strftime('%Y-%m-%d_%H-%M-%S')}.csv" 
