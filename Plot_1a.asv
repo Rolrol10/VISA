@@ -1,5 +1,6 @@
 
 data = readtable('Last_med_1a.csv'); % Opens file in read mode
+
 Volt = table2array(data(:,2));
 Current = table2array(data(:,3));
 Power = table2array(data(:,4));
@@ -7,7 +8,4 @@ Resistance = table2array(data(:,5));
 Capacity_used = table2array(data(:,6));
 Discharge_Time = table2array(data(:,7));
 
-for i = 
-
-
-
+plot(Discharge_Time, Volt)

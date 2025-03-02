@@ -181,9 +181,9 @@ if __name__ == "__main__":
     battery_test.set_discharge_mode("CURRent")
 
     # Set test parameters
-    discharge_current = 5.0  # Amps                                 Skriv her
-    cutoff_time = 60*60*2  # Seconds                              Og her
-    celle_nummer = 2 # Id på celle for å holde styr på data
+    discharge_current = 7.5  # Amps                                 Skriv her
+    cutoff_time = 60*40  # Seconds                              Og her
+    celle_nummer = 1 # Id på celle for å holde styr på data
 
     # Log filename
     filename_unfinished = f"Last_med_celle_{celle_nummer}_ved_{discharge_current}A_{time.strftime('%Y-%m-%d_%H-%M-%S')}.csv" 
