@@ -180,14 +180,15 @@ if __name__ == "__main__":
     battery_test.set_discharge_mode("CURRent")
 
     # Set test parameters
-    discharge_current = 1.0  # Amps                                 Skriv her
-    cutoff_time = 60*60*5  # Seconds                              Og her
+    discharge_current = 5.0  # Amps                                 Skriv her
+    cutoff_time = 60*60*2  # Seconds                              Og her
+    celle_nummer = 2 # Id på celle for å holde styr på data
 
     # Log filename
-    filename = f"Last_med_{discharge_current}A_{time.strftime('%Y-%m-%d_%H-%M-%S')}.csv" 
+    filename = f"Data/Last_med_celle_{celle_nummer}_ved_{discharge_current}A_{time.strftime('%Y-%m-%d_%H-%M-%S')}.csv" 
 
     # Safety parameters
-    cutoff_voltage = 3.0  # Volts
+    cutoff_voltage = 2.8  # Volts
     cutoff_capacity = 4800.0  # mAh
 
     battery_test.set_discharge_current(discharge_current)
