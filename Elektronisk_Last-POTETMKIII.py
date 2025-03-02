@@ -181,7 +181,7 @@ if __name__ == "__main__":
     battery_test.set_discharge_mode("CURRent")
 
     # Set test parameters
-    discharge_current = 7.5  # Amps                                 Skriv her
+    discharge_current = 3  # Amps                                 Skriv her
     cutoff_time = 60*40  # Seconds                              Og her
     celle_nummer = 1 # Id på celle for å holde styr på data
 
