@@ -183,7 +183,7 @@ if __name__ == "__main__":
     # Set test parameters
     discharge_current = 5.0  # Amps                                 Skriv her
     cutoff_time = 60*60*2  # Seconds                              Og her
-    celle_nummer = 4 # Id på celle for å holde styr på data
+    celle_nummer = 1 # Id på celle for å holde styr på data
 
     # Log filename
     filename_unfinished = f"Last_med_celle_{celle_nummer}_ved_{discharge_current}A_{time.strftime('%Y-%m-%d_%H-%M-%S')}.csv" 
@@ -199,8 +199,8 @@ if __name__ == "__main__":
     cutoff_capacity = 4800.0  # mAh
 
     battery_test.set_discharge_current(discharge_current)
-    battery_test.set_cutoff_voltage(cutoff_voltage)
-    #battery_test.set_cutoff_capacity(cutoff_capacity)
+    battery_test.set_cutoff_voltage(cutoff_voltage-0.05)
+    battery_test.set_cutoff_capacity(cutoff_capacity)
     battery_test.set_cutoff_time(cutoff_time)
 
     # Monitor before discharge
