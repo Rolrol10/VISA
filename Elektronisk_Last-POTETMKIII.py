@@ -2,6 +2,7 @@ import pyvisa
 import time
 import os
 import csv
+from pathlib import Path
 
 class BatteryTester:
     """Class to control the Siglent SDL1030X-E DC Electronic Load in Battery Testing Mode."""
@@ -180,11 +181,18 @@ if __name__ == "__main__":
     battery_test.set_discharge_mode("CURRent")
 
     # Set test parameters
-    discharge_current = 1.0  # Amps                                 Skriv her
-    cutoff_time = 60*60*6  # Seconds                              Og her
+    discharge_current = 5.0  # Amps                                 Skriv her
+    cutoff_time = 60*60*2  # Seconds                              Og her
+    celle_nummer = 4 # Id på celle for å holde styr på data
 
     # Log filename
-    filename = f"Last_med_{discharge_current}A_{time.strftime('%Y-%m-%d_%H-%M-%S')}.csv" 
+    filename_unfinished = f"Last_med_celle_{celle_nummer}_ved_{discharge_current}A_{time.strftime('%Y-%m-%d_%H-%M-%S')}.csv" 
+
+    # Create full path
+    # filename = os.path.join("Data", filename_unfinished)
+    sub = Path("Data")
+    sub.mkdir(parents=True, exist_ok=True)
+    filename = sub / filename_unfinished
 
     # Safety parameters
     cutoff_voltage = 2.8  # Volts
