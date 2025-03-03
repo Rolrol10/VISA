@@ -124,8 +124,8 @@ if __name__ == "__main__":
 
     # Sets parameters
     max_v = 4.2
-    max_c = 3.0
-    min_v = 3.0
+    max_c = 6.0
+    min_v = 2.6
     cutoff_c = 0.1
     voltage = True
 
