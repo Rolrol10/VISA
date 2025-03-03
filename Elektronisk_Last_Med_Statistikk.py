@@ -183,7 +183,7 @@ if __name__ == "__main__":
     # Set test parameters
     discharge_current = 1  # Amps                                 Skriv her
     cutoff_time = 60*60*5  # Seconds                              Og her
-    celle_nummer = 2 # Id på celle for å holde styr på data
+    celle_nummer = 4 # Id på celle for å holde styr på data
 
     # Log filename
     filename_unfinished = f"Last_med_celle_{celle_nummer}_ved_{discharge_current}A_{time.strftime('%Y-%m-%d_%H-%M-%S')}.csv" 
