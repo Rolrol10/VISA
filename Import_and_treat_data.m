@@ -130,6 +130,10 @@ celle_4_ved_5a_time = table2array(celle_4_ved_5a(:,6));
 celle_4_ved_7_5a_time = table2array(celle_4_ved_7_5a(:,6));
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Clear Unnecessary vaiables
+clear celle_1_ved_1a celle_1_ved_3a celle_1_ved_5a celle_1_ved_7_5a;
+clear celle_2_ved_1a celle_2_ved_3a celle_2_ved_5a celle_2_ved_7_5a;
+clear celle_4_ved_1a celle_4_ved_3a celle_4_ved_5a celle_4_ved_7_5a;
 
 %% Find the maximum length (celle_2_ved_1a)
 max_length = length(celle_2_ved_1a_time);
@@ -154,11 +158,24 @@ volt_7_5a_1 = pad_signal(celle_1_ved_7_5a_volt);
 volt_7_5a_2 = pad_signal(celle_2_ved_7_5a_volt);
 volt_7_5a_3 = pad_signal(celle_4_ved_7_5a_volt);
 
+%% Clear Original Voltage Variables
+clear celle_1_ved_1a_volt celle_2_ved_1a_volt celle_4_ved_1a_volt;
+clear celle_1_ved_3a_volt celle_2_ved_3a_volt celle_4_ved_3a_volt;
+clear celle_1_ved_5a_volt celle_2_ved_5a_volt celle_4_ved_5a_volt;
+clear celle_1_ved_7_5a_volt celle_2_ved_7_5a_volt celle_4_ved_7_5a_volt;
+
+
 %% Samler spenningsvariabler (Voltage Variables)
 volt_1a = [volt_1a_1, volt_1a_2, volt_1a_3];
 volt_3a = [volt_3a_1, volt_3a_2, volt_3a_3];
 volt_5a = [volt_5a_1, volt_5a_2, volt_5a_3];
 volt_7_5a = [volt_7_5a_1, volt_7_5a_2, volt_7_5a_3];
+
+%% Clear Voltage vaiables
+clear volt_1a_1 volt_1a_2 volt_1a_3;
+clear volt_3a_1 volt_3a_2 volt_3a_3;
+clear volt_5a_1 volt_5a_2 volt_5a_3;
+clear volt_7_5a_1 volt_7_5a_2 volt_7_5a_3;
 
 %% Pad current to match the longest one
 current_1a_1 = pad_signal(celle_1_ved_1a_current);
@@ -177,11 +194,23 @@ current_7_5a_1 = pad_signal(celle_1_ved_7_5a_current);
 current_7_5a_2 = pad_signal(celle_2_ved_7_5a_current);
 current_7_5a_3 = pad_signal(celle_4_ved_7_5a_current);
 
+%% Clear Original Current Variables
+clear celle_1_ved_1a_current celle_2_ved_1a_current celle_4_ved_1a_current;
+clear celle_1_ved_3a_current celle_2_ved_3a_current celle_4_ved_3a_current;
+clear celle_1_ved_5a_current celle_2_ved_5a_current celle_4_ved_5a_current;
+clear celle_1_ved_7_5a_current celle_2_ved_7_5a_current celle_4_ved_7_5a_current;
+
 %% Samler strømvariabler (Current Variables)
 current_1a = [current_1a_1, current_1a_2, current_1a_3];
 current_3a = [current_3a_1, current_3a_2, current_3a_3];
 current_5a = [current_5a_1, current_5a_2, current_5a_3];
 current_7_5a = [current_7_5a_1, current_7_5a_2, current_7_5a_3];
+
+%% Clear Current Variables
+clear current_1a_1 current_1a_2 current_1a_3;
+clear current_3a_1 current_3a_2 current_3a_3;
+clear current_5a_1 current_5a_2 current_5a_3;
+clear current_7_5a_1 current_7_5a_2 current_7_5a_3;
 
 %% Pad power to match the longest one
 power_1a_1 = pad_signal(celle_1_ved_1a_power);
@@ -200,11 +229,23 @@ power_7_5a_1 = pad_signal(celle_1_ved_7_5a_power);
 power_7_5a_2 = pad_signal(celle_2_ved_7_5a_power);
 power_7_5a_3 = pad_signal(celle_4_ved_7_5a_power);
 
+%% Clear Original Power Variables
+clear celle_1_ved_1a_power celle_2_ved_1a_power celle_4_ved_1a_power;
+clear celle_1_ved_3a_power celle_2_ved_3a_power celle_4_ved_3a_power;
+clear celle_1_ved_5a_power celle_2_ved_5a_power celle_4_ved_5a_power;
+clear celle_1_ved_7_5a_power celle_2_ved_7_5a_power celle_4_ved_7_5a_power;
+
 %% Samler effektvariabler (Power Variables)
 power_1a = [power_1a_1, power_1a_2, power_1a_3];
 power_3a = [power_3a_1, power_3a_2, power_3a_3];
 power_5a = [power_5a_1, power_5a_2, power_5a_3];
 power_7_5a = [power_7_5a_1, power_7_5a_2, power_7_5a_3];
+
+%% Clear Power Variables
+clear power_1a_1 power_1a_2 power_1a_3;
+clear power_3a_1 power_3a_2 power_3a_3;
+clear power_5a_1 power_5a_2 power_5a_3;
+clear power_7_5a_1 power_7_5a_2 power_7_5a_3;
 
 %% Pad resistance to match the longest one
 res_1a_1 = pad_signal(celle_1_ved_1a_res);
@@ -223,11 +264,23 @@ res_7_5a_1 = pad_signal(celle_1_ved_7_5a_res);
 res_7_5a_2 = pad_signal(celle_2_ved_7_5a_res);
 res_7_5a_3 = pad_signal(celle_4_ved_7_5a_res);
 
+%% Clear Original Resistance Variables
+clear celle_1_ved_1a_res celle_2_ved_1a_res celle_4_ved_1a_res;
+clear celle_1_ved_3a_res celle_2_ved_3a_res celle_4_ved_3a_res;
+clear celle_1_ved_5a_res celle_2_ved_5a_res celle_4_ved_5a_res;
+clear celle_1_ved_7_5a_res celle_2_ved_7_5a_res celle_4_ved_7_5a_res;
+
 %% Samler motstandsvariabler (Resistance Variables)
 res_1a = [res_1a_1, res_1a_2, res_1a_3];
 res_3a = [res_3a_1, res_3a_2, res_3a_3];
 res_5a = [res_5a_1, res_5a_2, res_5a_3];
 res_7_5a = [res_7_5a_1, res_7_5a_2, res_7_5a_3];
+
+%% Clear Resistance Variables
+clear res_1a_1 res_1a_2 res_1a_3;
+clear res_3a_1 res_3a_2 res_3a_3;
+clear res_5a_1 res_5a_2 res_5a_3;
+clear res_7_5a_1 res_7_5a_2 res_7_5a_3;
 
 %% Pad capacity to match the longest one
 capa_1a_1 = pad_signal(celle_1_ved_1a_capa);
@@ -246,12 +299,23 @@ capa_7_5a_1 = pad_signal(celle_1_ved_7_5a_capa);
 capa_7_5a_2 = pad_signal(celle_2_ved_7_5a_capa);
 capa_7_5a_3 = pad_signal(celle_4_ved_7_5a_capa);
 
+%% Clear Original Capacity Variables
+clear celle_1_ved_1a_capa celle_2_ved_1a_capa celle_4_ved_1a_capa;
+clear celle_1_ved_3a_capa celle_2_ved_3a_capa celle_4_ved_3a_capa;
+clear celle_1_ved_5a_capa celle_2_ved_5a_capa celle_4_ved_5a_capa;
+clear celle_1_ved_7_5a_capa celle_2_ved_7_5a_capa celle_4_ved_7_5a_capa;
+
 %% Samler kapasitetsvariabler (Capacity Used Variables)
 capa_1a = [capa_1a_1, capa_1a_2, capa_1a_3];
 capa_3a = [capa_3a_1, capa_3a_2, capa_3a_3];
 capa_5a = [capa_5a_1, capa_5a_2, capa_5a_3];
 capa_7_5a = [capa_7_5a_1, capa_7_5a_2, capa_7_5a_3];
 
+%% Clear Capacity Variables
+clear capa_1a_1 capa_1a_2 capa_1a_3;
+clear capa_3a_1 capa_3a_2 capa_3a_3;
+clear capa_5a_1 capa_5a_2 capa_5a_3;
+clear capa_7_5a_1 capa_7_5a_2 capa_7_5a_3;
 
 %% Pad time to match the longest one
 time_1a_1 = pad_signal(celle_1_ved_1a_time);
@@ -270,50 +334,74 @@ time_7_5a_1 = pad_signal(celle_1_ved_7_5a_time);
 time_7_5a_2 = pad_signal(celle_2_ved_7_5a_time);
 time_7_5a_3 = pad_signal(celle_4_ved_7_5a_time);
 
+%% Clear Original Time Variables
+clear celle_1_ved_1a_time celle_2_ved_1a_time celle_4_ved_1a_time;
+clear celle_1_ved_3a_time celle_2_ved_3a_time celle_4_ved_3a_time;
+clear celle_1_ved_5a_time celle_2_ved_5a_time celle_4_ved_5a_time;
+clear celle_1_ved_7_5a_time celle_2_ved_7_5a_time celle_4_ved_7_5a_time;
+
 %% Samler tidsvariabler (Time Variables)
 time_1a = [time_1a_1, time_1a_2, time_1a_3];
 time_3a = [time_3a_1, time_3a_2, time_3a_3];
 time_5a = [time_5a_1, time_5a_2, time_5a_3];
 time_7_5a = [time_7_5a_1, time_7_5a_2, time_7_5a_3];
 
-%% Plot
-hold on;
-plot(time_1a,volt_1a)
-plot(time_3a, volt_3a)
-plot(time_5a, volt_5a)
-plot(time_7_5a, volt_7_5a)
-hold off;
+%% Clear Time Variables
+clear time_1a_1 time_1a_2 time_1a_3;
+clear time_3a_1 time_3a_2 time_3a_3;
+clear time_5a_1 time_5a_2 time_5a_3;
+clear time_7_5a_1 time_7_5a_2 time_7_5a_3;
 
-% Plot all signals on the same graph
-%figure;
-%hold on;
-%plot(x, y1, 'r-', 'LineWidth', 1.5, 'DisplayName', 'Volt');
-%plot(x, y2, 'b--', 'LineWidth', 1.5, 'DisplayName', 'Volt_2');
-%plot(time, y3, 'g-.', 'LineWidth', 1.5, 'DisplayName', 'Watt');
-%plot(time, y4, 'm:', 'LineWidth', 1.5, 'DisplayName', 'Motstand');
-%plot(time, y5, 'k-', 'LineWidth', 2, 'DisplayName', 'Capacity used');
+%% Compute average of voltage values
+volt_1a_avg = mean(volt_1a, 2, 'omitnan');
+volt_3a_avg = mean(volt_3a, 2, 'omitnan');
+volt_5a_avg = mean(volt_5a, 2, 'omitnan');
+volt_7_5a_avg = mean(volt_7_5a, 2, 'omitnan');
 
-% Formatting
-%xlabel('Time (seconds)');
-%ylabel('Signal Amplitude');
-%title('Plot of Multiple Signals Over Time');
-%legend show;
-%grid on;
-%hold off;
+%% Clear Combined Voltage Variables
+clear volt_1a volt_3a volt_5a volt_7_5a;
 
+%% Compute average of current values
+current_1a_avg = mean(current_1a, 2, 'omitnan');
+current_3a_avg = mean(current_3a, 2, 'omitnan');
+current_5a_avg = mean(current_5a, 2, 'omitnan');
+current_7_5a_avg = mean(current_7_5a, 2, 'omitnan');
 
+%% Clear Combined Current Variables
+clear current_1a current_3a current_5a current_7_5a;
 
+%% Compute average of power values
+power_1a_avg = mean(power_1a, 2, 'omitnan');
+power_3a_avg = mean(power_3a, 2, 'omitnan');
+power_5a_avg = mean(power_5a, 2, 'omitnan');
+power_7_5a_avg = mean(power_7_5a, 2, 'omitnan');
 
+%% Clear Combined Power Variables
+clear power_1a power_3a power_5a power_7_5a;
 
+%% Compute average of resistance values
+res_1a_avg = mean(res_1a, 2, 'omitnan');
+res_3a_avg = mean(res_3a, 2, 'omitnan');
+res_5a_avg = mean(res_5a, 2, 'omitnan');
+res_7_5a_avg = mean(res_7_5a, 2, 'omitnan');
 
+%% Clear Combined Resistance Variables
+clear res_1a res_3a res_5a res_7_5a;
 
+%% Compute average of capacity values
+capa_1a_avg = mean(capa_1a, 2, 'omitnan');
+capa_3a_avg = mean(capa_3a, 2, 'omitnan');
+capa_5a_avg = mean(capa_5a, 2, 'omitnan');
+capa_7_5a_avg = mean(capa_7_5a, 2, 'omitnan');
 
+%% Clear Combined Capacity Variables
+clear capa_1a capa_3a capa_5a capa_7_5a;
 
+%% Compute average of time values
+time_1a_avg = mean(time_1a, 2, 'omitnan');
+time_3a_avg = mean(time_3a, 2, 'omitnan');
+time_5a_avg = mean(time_5a, 2, 'omitnan');
+time_7_5a_avg = mean(time_7_5a, 2, 'omitnan');
 
-
-
-
-
-
-
-
+%% Clear Combined Time Variables
+clear time_1a time_3a time_5a time_7_5a;

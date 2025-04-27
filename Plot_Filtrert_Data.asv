@@ -1,0 +1,193 @@
+%% Clear
+clearvars;
+clear;
+close all;
+Import_and_treat_data;
+
+%% Capacity left
+% Convert spent capacity into capacity left
+total_capacity = 4800; % mAh
+capa_left_1a = total_capacity - capa_1a_avg;
+capa_left_3a = total_capacity - capa_3a_avg;
+capa_left_5a = total_capacity - capa_5a_avg;
+capa_left_7_5a = total_capacity - capa_7_5a_avg;
+
+%% Compute Variables for plot 1
+% Convert time from seconds to hours
+time_1a_hours = time_1a_avg / 3600;  % Convert seconds to hours
+time_3a_hours = time_3a_avg / 3600;
+time_5a_hours = time_5a_avg / 3600;
+time_7_5a_hours = time_7_5a_avg / 3600;
+
+% Function to find the FIRST voltage crossing
+find_first_crossing = @(time, voltage, threshold) ...
+    time(find(abs(diff(sign(voltage - threshold))) > 0, 1)); % Only get the first match
+
+% Define voltage thresholds
+V_LOW = 3.4;
+
+% Find the first time point where voltage crosses 3V
+time_3v_1a = find_first_crossing(time_1a_hours, volt_1a_avg, V_LOW);
+time_3v_3a = find_first_crossing(time_3a_hours, volt_3a_avg, V_LOW);
+time_3v_5a = find_first_crossing(time_5a_hours, volt_5a_avg, V_LOW);
+time_3v_7_5a = find_first_crossing(time_7_5a_hours, volt_7_5a_avg, V_LOW);
+
+% Convert to string
+time_3v_1a_str = datestr(time_3v_1a / 24, 'HH:MM');
+time_3v_3a_str = datestr(time_3v_3a / 24, 'HH:MM');
+time_3v_5a_str = datestr(time_3v_5a / 24, 'HH:MM');
+time_3v_7_5a_str = datestr(time_3v_7_5a / 24, 'HH:MM');
+
+% %% Plot
+% % Create figure
+% figure;
+% hold on;
+% 
+% % Plot each voltage dataset against time (converted to hours)
+% plot(time_1a_hours, volt_1a_avg, 'r', 'LineWidth', 1.5, 'DisplayName', '1A Last');
+% plot(time_3a_hours, volt_3a_avg, 'b', 'LineWidth', 1.5, 'DisplayName', '3A Last');
+% plot(time_5a_hours, volt_5a_avg, 'g', 'LineWidth', 1.5, 'DisplayName', '5A Last');
+% plot(time_7_5a_hours, volt_7_5a_avg, 'm', 'LineWidth', 1.5, 'DisplayName', '7.5A Last');
+% 
+% % Highlight the first crossing points on the plot
+% plot(time_3v_1a, V_LOW, 'ro', 'MarkerSize', 8, 'MarkerFaceColor', 'r', 'DisplayName', sprintf('%s T:M', time_3v_1a_str));
+% plot(time_3v_3a, V_LOW, 'bo', 'MarkerSize', 8, 'MarkerFaceColor', 'b', 'DisplayName', sprintf('%s T:M', time_3v_3a_str));
+% plot(time_3v_5a, V_LOW, 'go', 'MarkerSize', 8, 'MarkerFaceColor', 'g', 'DisplayName', sprintf('%s T:M', time_3v_5a_str));
+% plot(time_3v_7_5a, V_LOW, 'mo', 'MarkerSize', 8, 'MarkerFaceColor', 'm', 'DisplayName', sprintf('%s T:M', time_3v_7_5a_str));
+% 
+% 
+% % Formatting
+% xlabel('Time (hh:mm)');
+% ylabel('Voltage (V)');
+% title('Voltage vs Time for Different Currents');
+% legend show;
+% grid on;
+% 
+% % Set finer grid and ticks
+% ax = gca;
+% ax.XTick = linspace(min(time_1a_hours), max(time_1a_hours), 10); % Increase number of time ticks
+% ax.XMinorTick = 'on'; % Enable minor ticks
+% ax.YMinorTick = 'on';
+% 
+% % Set x-axis to display time in hours and minutes
+% ax = gca;
+% ax.XTickLabel = datestr(ax.XTick / 24, 'HH:MM');  % Convert fraction of day to HH:MM format
+% 
+% % Improve grid visibility
+% grid minor;
+% set(gca, 'GridAlpha', 0.6, 'MinorGridAlpha', 0.3);  % Adjust grid transparency
+% 
+% hold off;
+
+%% Compute variables for plot 2
+% Define the voltage threshold
+V_threshold = 3.4;  % Start plotting when voltage reaches 3.4V
+
+% Find the capacity values (mAh) when voltage reaches 3.4V for each current
+cap_7_5a = find_first_crossing(capa_7_5a_avg, volt_7_5a_avg, V_threshold);
+cap_5a = find_first_crossing(capa_5a_avg, volt_5a_avg, V_threshold);
+cap_3a = find_first_crossing(capa_3a_avg, volt_3a_avg, V_threshold);
+cap_1a = find_first_crossing(capa_1a_avg, volt_1a_avg, V_threshold);
+
+% Convert capacity values to percentage (100% = full, 0% = empty)
+capacities_mAh = [cap_7_5a, cap_5a, cap_3a, cap_1a];  % Actual capacity points
+capacities_percent = (capacities_mAh / total_capacity) * 100;  % Convert to %
+capacities_percent = flip(floor(capacities_percent)); % flips and rounds down the x axis
+
+% Define current levels
+currents = [7.5, 5, 3, 1];  % Amps 
+
+%% Second Plot
+% Plot Current vs Remaining Capacity Percentage
+figure;
+plot(capacities_percent, currents, 'r-', 'LineWidth', 2, 'Marker', 'o', 'MarkerFaceColor', 'r', 'DisplayName', 'Discharge Profile');
+set(gca, 'XDir','reverse')
+% Formatting
+xlabel('Remaining Capacity (%)');
+ylabel('Current (A)');
+title('Maximum Load vs Remaining Capacity');
+grid on;
+legend show;
+
+%% Compute variables for plot 3
+
+percent_x = 1:1:100;
+
+x = percent_x; % Original vector
+points_x = capacities_percent; % x points
+points_y = currents;   % y values at these points
+x_maks = max(capacities_percent);
+y = zeros(size(x)); % initialize y
+
+for k = length(x)
+    if 
+        
+    else
+        idx = (x <= points_x(k));
+    end
+    y(idx) = points_y(k);
+end
+
+figure
+plot(x,y)
+
+%% Third Plot
+
+% Create figure
+figure;
+hold on;
+
+% Plot voltage vs. time in hours
+plot(time_1a_hours, volt_1a_avg, 'r', 'LineWidth', 1.5, 'DisplayName', '1A Last');
+plot(time_3a_hours, volt_3a_avg, 'b', 'LineWidth', 1.5, 'DisplayName', '3A Last');
+plot(time_5a_hours, volt_5a_avg, 'g', 'LineWidth', 1.5, 'DisplayName', '5A Last');
+plot(time_7_5a_hours, volt_7_5a_avg, 'm', 'LineWidth', 1.5, 'DisplayName', '7.5A Last');
+
+% Highlight first crossing points clearly
+plot(time_3v_1a, V_LOW, 'ro', 'MarkerSize', 8, 'MarkerFaceColor', 'r', ...
+    'DisplayName', sprintf('%s T:M', time_3v_1a_str));
+plot(time_3v_3a, V_LOW, 'bo', 'MarkerSize', 8, 'MarkerFaceColor', 'b', ...
+    'DisplayName', sprintf('%s T:M', time_3v_3a_str));
+plot(time_3v_5a, V_LOW, 'go', 'MarkerSize', 8, 'MarkerFaceColor', 'g', ...
+    'DisplayName', sprintf('%s T:M', time_3v_5a_str));
+plot(time_3v_7_5a, V_LOW, 'mo', 'MarkerSize', 8, 'MarkerFaceColor', 'm', ...
+    'DisplayName', sprintf('%s T:M', time_3v_7_5a_str));
+
+% Axis labels and title
+xlabel('Time (hh:mm)');
+ylabel('Voltage (V)');
+title('Voltage vs Time for Different Currents');
+legend('Location', 'best');
+grid on;
+
+% Customize x-axis ticks to show time correctly
+ax = gca;
+
+% Convert hours to MATLAB datenums (fraction of day)
+ax.XTick = linspace(min([time_1a_hours; time_3a_hours; time_5a_hours; time_7_5a_hours]), ...
+                    max([time_1a_hours; time_3a_hours; time_5a_hours; time_7_5a_hours]), 10);
+
+% Set x-axis tick labels in HH:MM format
+ax.XTickLabel = datestr(ax.XTick / 24, 'HH:MM');
+
+% Enhance grid with minor ticks
+ax.XMinorTick = 'on';
+ax.YMinorTick = 'on';
+grid minor;
+
+% Adjust grid transparency for better readability
+ax.GridAlpha = 0.5;
+ax.MinorGridAlpha = 0.3;
+
+hold off;
+
+
+
+
+
+
+
+
+
+
+

@@ -123,9 +123,10 @@ if __name__ == "__main__":
     psu.reset()
 
     # Sets parameters
-    max_v = 4.2
+    max_v = 16.8
+    # max_v = 15.2
     max_c = 6.0
-    min_v = 2.6
+    min_v = 13.6
     cutoff_c = 0.1
     voltage = True
 
@@ -176,13 +177,14 @@ if __name__ == "__main__":
     
         # Checks if current is too high and lowers voltage if it is
         if current > max_c and not voltage == max_v:
-            new_volt = round((voltage - 0.02), 2)
+            new_volt = round((voltage - 0.03), 2)
             psu.set_voltage(Høyre_kanal, new_volt)
 
         # Checks if voltage can be increased
         if (current < (max_c-0.5)) and (voltage < max_v) and not (voltage == max_v):
-            new_volt = round((voltage + 0.01), 2)
+            new_volt = round((voltage + 0.02), 2)
             psu.set_voltage(Høyre_kanal, new_volt)
+            print(f"Upping voltage to {new_volt}")
 
         # If battery reaches max voltage, switch to constant voltage mode
         if voltage > max_v:
